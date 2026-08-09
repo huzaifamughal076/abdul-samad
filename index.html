@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wedding Invitation | Auns & Aleena</title>
-    <link rel="stylesheet" href="style.css?v=19">
+    <title>Wedding Invitation | Abdul Samad & Anam</title>
+    <link rel="stylesheet" href="style.css?v=20">
 
     <!-- Preload the envelope images shown first, so the opening screen paints fast -->
     <link rel="preload" as="image" href="assets/seal-bismillah.png">
@@ -173,7 +173,7 @@
         </div>
     </div>
 
-    <!-- 3. Main Website Content (Hidden until envelope opens) -->
+    <!-- 3. Main Website Content — Event Selection (Hidden until envelope opens) -->
     <main id="main-content" class="main-content hidden">
         <!-- Floating Petals Canvas -->
         <canvas id="petals-canvas"></canvas>
@@ -185,128 +185,87 @@
         <!-- Hero Section -->
         <section class="hero reveal">
             <div class="hero-inner">
-                <span class="event-tag gold-shimmer">Shalima Event</span>
+                <span class="event-tag gold-shimmer">You&rsquo;re Cordially Invited</span>
 
                 <p class="host-line">
-                    Mr. &amp; Mrs. Irfan Sharif<br>
-                    <span class="host-line-sub">cordially invite you to share in the joy and blessings of their beloved son's wedding celebration</span>
+                    Mr. &amp; Mrs. Ubaid Sharif<br>
+                    <span class="host-line-sub">cordially invite you to share in the joy and blessings of their beloved son&rsquo;s wedding celebrations</span>
                 </p>
 
-                <h1 class="couple-name">M. Auns Irfan</h1>
+                <h1 class="couple-name">Abdul Samad Javaid</h1>
                 <div class="couple-amp-wrap">
                     <span class="couple-amp">&amp;</span>
                 </div>
-                <h1 class="couple-name">Aleena Ishtiaq</h1>
-                
+                <h1 class="couple-name">Anam Maalik</h1>
+
                 <p class="invitation-text">
-                    “Together with our families, we joyfully invite you to celebrate our son's wedding.”
+                    &ldquo;Together with our families, we joyfully invite you to celebrate these blessed occasions.&rdquo;
                 </p>
                 <div class="decorative-divider"></div>
             </div>
         </section>
 
-        <!-- Details Card Section -->
-        <section class="details-section reveal">
-            <div class="details-card">
-                <div class="card-border-glow"></div>
-                <h2>Wedding Details</h2>
-                
-                <div class="detail-item">
-                    <div class="icon-box"><i class="fas fa-calendar-alt"></i></div>
-                    <div class="detail-text">
-                        <h3>Date</h3>
-                        <p>14 November 2026</p>
-                    </div>
-                </div>
+        <!-- Event Selection Section -->
+        <section class="events-section reveal">
+            <h2 class="section-title">The Celebrations</h2>
+            <p class="events-subtitle">Select an event to view its details</p>
 
-                <div class="detail-item">
-                    <div class="icon-box"><i class="fas fa-crown"></i></div>
-                    <div class="detail-text">
-                        <h3>Sehra Bandi</h3>
-                        <p>11:00 AM</p>
-                        <p class="detail-sub">Groom's Residence</p>
-                    </div>
-                </div>
+            <div class="events-grid" id="events-grid">
+                <button class="event-card" data-event="nikah" aria-label="View Nikah details">
+                    <span class="ec-glow"></span>
+                    <span class="ec-icon"><i class="fas fa-ring"></i></span>
+                    <h3 class="ec-name">Nikah</h3>
+                    <p class="ec-date">7 November 2026</p>
+                    <p class="ec-time">6:00 PM &ndash; 9:00 PM</p>
+                    <span class="ec-cta">View Details <i class="fas fa-arrow-right"></i></span>
+                </button>
 
-                <div class="detail-item">
-                    <div class="icon-box"><i class="fas fa-clock"></i></div>
-                    <div class="detail-text">
-                        <h3>Venue Timing</h3>
-                        <p>1:00 PM – 3:00 PM</p>
-                    </div>
-                </div>
+                <button class="event-card" data-event="mehndi" aria-label="View Mehndi details">
+                    <span class="ec-glow"></span>
+                    <span class="ec-icon"><i class="fas fa-hand-sparkles"></i></span>
+                    <h3 class="ec-name">Mehndi</h3>
+                    <p class="ec-date">7 November 2026</p>
+                    <p class="ec-time">10:00 PM &ndash; 2:00 AM</p>
+                    <span class="ec-cta">View Details <i class="fas fa-arrow-right"></i></span>
+                </button>
 
-                <div class="detail-item">
-                    <div class="icon-box"><i class="fas fa-map-marker-alt"></i></div>
-                    <div class="detail-text">
-                        <h3>Venue</h3>
-                        <p>Le Aura Grand Marquee</p>
-                    </div>
-                </div>
+                <button class="event-card" data-event="sehra-barat" aria-label="View Sehra Bandi and Barat details">
+                    <span class="ec-glow"></span>
+                    <span class="ec-icon"><i class="fas fa-crown"></i></span>
+                    <h3 class="ec-name">Sehra Bandi &amp; Barat</h3>
+                    <p class="ec-date">8 November 2026</p>
+                    <p class="ec-time">From 5:00 PM</p>
+                    <span class="ec-cta">View Details <i class="fas fa-arrow-right"></i></span>
+                </button>
+
+                <button class="event-card" data-event="walima" aria-label="View Walima details">
+                    <span class="ec-glow"></span>
+                    <span class="ec-icon"><i class="fas fa-utensils"></i></span>
+                    <h3 class="ec-name">Walima</h3>
+                    <p class="ec-date">9 November 2026</p>
+                    <p class="ec-time">Time to be confirmed</p>
+                    <span class="ec-cta">View Details <i class="fas fa-arrow-right"></i></span>
+                </button>
             </div>
         </section>
 
-        <!-- Countdown Timer Section -->
-        <section class="countdown-section reveal">
-            <h2 class="section-title">The Countdown</h2>
-            <div class="countdown-container">
-                <div class="countdown-box">
-                    <span id="days">00</span>
-                    <p>Days</p>
-                </div>
-                <div class="countdown-box">
-                    <span id="hours">00</span>
-                    <p>Hours</p>
-                </div>
-                <div class="countdown-box">
-                    <span id="minutes">00</span>
-                    <p>Minutes</p>
-                </div>
-                <div class="countdown-box">
-                    <span id="seconds">00</span>
-                    <p>Seconds</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- Location Section -->
-        <section class="location-section reveal">
-            <h2 class="section-title">Venue Location</h2>
-            <p class="venue-sub">Le Aura Grand Marquee</p>
-            
-            <div class="map-frame" id="map-frame">
-                <div id="custom-map" class="custom-map"></div>
-            </div>
-
-            <a href="https://maps.app.goo.gl/PMvD3bVZJBwWqLvJ6?g_st=ic" target="_blank" class="btn premium-btn location-btn">
-                <i class="fas fa-location-arrow"></i> Open in Google Maps
-            </a>
-        </section>
-
-        <!-- R.S.V.P Section -->
+        <!-- R.S.V.P Section (shared across all events) -->
         <section class="rsvp-section reveal">
             <h2 class="section-title">R.S.V.P</h2>
             <div class="rsvp-card">
                 <div class="card-border-glow"></div>
                 <div class="rsvp-item">
-                    <a href="tel:03214423351" class="icon-box" aria-label="Call M. Ubaid Sharif"><i class="fas fa-phone"></i></a>
+                    <a href="tel:03214423351" class="icon-box" aria-label="Call Muhammad Ubaid Sharif"><i class="fas fa-phone"></i></a>
                     <div class="rsvp-text">
-                        <h3>M. Ubaid Sharif</h3>
+                        <h3>Muhammad Ubaid Sharif</h3>
                         <a href="tel:03214423351">0321 4423351</a>
                     </div>
                 </div>
                 <div class="rsvp-item">
-                    <a href="tel:03214558634" class="icon-box" aria-label="Call M. Irfan Sharif"><i class="fas fa-phone"></i></a>
+                    <a href="tel:03154558634" class="icon-box" aria-label="Call Muhammad Irfan Sharif"><i class="fas fa-phone"></i></a>
                     <div class="rsvp-text">
-                        <h3>M. Irfan Sharif</h3>
-                        <a href="tel:03214558634">0321 4558634</a>
-                    </div>
-                </div>
-                <div class="rsvp-item">
-                    <a href="tel:03004124027" class="icon-box" aria-label="Call M. Nadeem Ishaq"><i class="fas fa-phone"></i></a>
-                    <div class="rsvp-text">
-                        <h3>M. Nadeem Ishaq</h3>
-                        <a href="tel:03004124027">0300 4124027</a>
+                        <h3>Muhammad Irfan Sharif</h3>
+                        <a href="tel:03154558634">0315 4558634</a>
                     </div>
                 </div>
                 <div class="rsvp-item">
@@ -317,17 +276,17 @@
                     </div>
                 </div>
                 <div class="rsvp-item">
-                    <a href="tel:03020002840" class="icon-box" aria-label="Call Ihsan Fayaz"><i class="fas fa-phone"></i></a>
+                    <a href="tel:03340002840" class="icon-box" aria-label="Call Ehsan Fayyaz"><i class="fas fa-phone"></i></a>
                     <div class="rsvp-text">
-                        <h3>Ihsan Fayaz</h3>
-                        <a href="tel:03020002840">0302 0002840</a>
+                        <h3>Ehsan Fayyaz</h3>
+                        <a href="tel:03340002840">0334 0002840</a>
                     </div>
                 </div>
                 <div class="rsvp-item">
-                    <a href="tel:03224755176" class="icon-box" aria-label="Call M. Huzaifa Irfan"><i class="fas fa-phone"></i></a>
+                    <a href="tel:03231424857" class="icon-box" aria-label="Call Muhammad Zaid Mughal"><i class="fas fa-phone"></i></a>
                     <div class="rsvp-text">
-                        <h3>M. Huzaifa Irfan</h3>
-                        <a href="tel:03224755176">0322 4755176</a>
+                        <h3>Muhammad Zaid Mughal</h3>
+                        <a href="tel:03231424857">0323 1424857</a>
                     </div>
                 </div>
             </div>
@@ -341,20 +300,26 @@
                 <p class="lf-intro">With warm hearts, we are looking forward to welcoming you</p>
                 <div class="lf-names">
                     <p class="lf-name">Mr. &amp; Mrs. Ubaid Sharif</p>
-                    <p class="lf-name">Mr. &amp; Mrs. Irfan Sharif</p>
-                    <p class="lf-name">Mr. &amp; Mrs. Nadeem Ishaq</p>
                 </div>
             </div>
         </section>
 
         <!-- Footer -->
         <footer class="reveal">
-            <p class="quote">“Two hearts, one soul, and a lifetime of love.”</p>
+            <p class="quote">&ldquo;Two hearts, one soul, and a lifetime of love.&rdquo;</p>
             <div class="footer-divider"></div>
-            <p class="closing">We look forward to celebrating this joyous occasion with you.</p>
+            <p class="closing">We look forward to celebrating these joyous occasions with you.</p>
         </footer>
     </main>
 
-    <script src="script.js?v=8"></script>
+    <!-- 3b. Event Detail Overlay (populated by JS when an event card is tapped) -->
+    <div id="event-detail" class="event-detail">
+        <button id="detail-back" class="detail-back" aria-label="Back to all events">
+            <i class="fas fa-arrow-left"></i><span>All Events</span>
+        </button>
+        <div class="event-detail-inner" id="event-detail-inner"></div>
+    </div>
+
+    <script src="script.js?v=9"></script>
 </body>
 </html>

@@ -175,12 +175,11 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         mainContent.classList.remove("hidden");
-        initCountdown();
         initScrollReveal();
         initPetals();
-        initCustomMap();
+        initEventCards();
 
-        // The wedding song fades in 2 seconds after landing on the main invitation
+        // The wedding song fades in 2 seconds after landing on the event selection
         setTimeout(() => fadeInAudio(duaRecitation, 2600), 2000);
     }
 
@@ -241,16 +240,192 @@ document.addEventListener("DOMContentLoaded", () => {
         return window._leafletPromise;
     }
 
-    function initCustomMap() {
-        const mapContainer = document.getElementById("custom-map");
-        if (!mapContainer) return;
-        loadLeaflet().then(() => buildCustomMap(mapContainer)).catch(() => {});
+    function initEventMap(containerId, opts) {
+        loadLeaflet().then(() => buildCustomMap(containerId, opts)).catch(() => {});
     }
 
-    function buildCustomMap(mapContainer) {
-        // Coordinates for Le Aura Grand Marquee, Lahore
-        const lat = 31.4815197;
-        const lng = 74.4011883;
+    // ==========================================
+    // 3b. EVENT SELECTION -> DETAIL NAVIGATION
+    // ==========================================
+    // Single source of truth for the four celebrations. Each entry drives both the
+    // selection card (in index.html) and the detail view rendered on tap.
+    const SAPPHIRE = { lat: 31.3998532, lng: 74.2765987, mapLink: "https://maps.app.goo.gl/bJn4Ef3WJS6Rfrj69" };
+    const EVENTS = [
+        {
+            id: "nikah",
+            name: "Nikah",
+            icon: "fa-ring",
+            date: "7 November 2026",
+            countdown: "November 7, 2026 18:00:00",
+            venueName: "Sapphire Palace Event Complex",
+            location: SAPPHIRE,
+            rows: [
+                { icon: "fa-calendar-alt", label: "Date", value: "7 November 2026" },
+                { icon: "fa-clock", label: "Time", value: "6:00 PM – 9:00 PM" },
+                { icon: "fa-map-marker-alt", label: "Venue", value: "Sapphire Palace Event Complex",
+                  sub: "Shamim ul Haq Chowk, Nasheman Iqbal, Phase-II, Lahore" }
+            ]
+        },
+        {
+            id: "mehndi",
+            name: "Mehndi",
+            icon: "fa-hand-sparkles",
+            date: "7 November 2026",
+            countdown: "November 7, 2026 22:00:00",
+            venueName: "Groom's Residence",
+            location: null,
+            rows: [
+                { icon: "fa-calendar-alt", label: "Date", value: "7 November 2026" },
+                { icon: "fa-clock", label: "Time", value: "10:00 PM – 2:00 AM" },
+                { icon: "fa-map-marker-alt", label: "Venue", value: "Groom's Residence" }
+            ]
+        },
+        {
+            id: "sehra-barat",
+            name: "Sehra Bandi & Barat",
+            icon: "fa-crown",
+            date: "8 November 2026",
+            countdown: "November 8, 2026 17:00:00",
+            venueName: "Sapphire Palace Event Complex",
+            location: SAPPHIRE,
+            rows: [
+                { icon: "fa-calendar-alt", label: "Date", value: "8 November 2026" },
+                { icon: "fa-crown", label: "Sehra Bandi", value: "5:00 PM", sub: "Groom's Residence" },
+                { icon: "fa-car-side", label: "Barat (Departure)", value: "6:00 PM – 9:00 PM",
+                  sub: "Sapphire Palace Event Complex" }
+            ]
+        },
+        {
+            id: "walima",
+            name: "Walima",
+            icon: "fa-utensils",
+            date: "9 November 2026",
+            countdown: null, // time to be confirmed
+            venueName: "Empire Hall — Garrison Country Club",
+            location: { lat: 31.5379359, lng: 74.394769, mapLink: "https://maps.app.goo.gl/U8ZtPtjaLSyZKWui7" },
+            rows: [
+                { icon: "fa-calendar-alt", label: "Date", value: "9 November 2026" },
+                { icon: "fa-clock", label: "Time", value: "To be confirmed" },
+                { icon: "fa-map-marker-alt", label: "Venue", value: "Empire Hall #3, Garrison Country Club",
+                  sub: "Lahore" }
+            ]
+        }
+    ];
+
+    // Live handles for whatever the current detail view spun up, so we can tear it
+    // all down cleanly when navigating away (prevents timer/map leaks).
+    let currentMap = null;
+    let currentMapIntervals = [];
+    let currentCountdown = null;
+
+    function clearDetailDynamic() {
+        if (currentCountdown) { clearInterval(currentCountdown); currentCountdown = null; }
+        currentMapIntervals.forEach(clearInterval);
+        currentMapIntervals = [];
+        if (currentMap) { try { currentMap.remove(); } catch (e) {} currentMap = null; }
+    }
+
+    function initEventCards() {
+        document.querySelectorAll(".event-card").forEach(card => {
+            card.addEventListener("click", () => openEventDetail(card.dataset.event));
+        });
+        const back = document.getElementById("detail-back");
+        if (back) back.addEventListener("click", closeEventDetail);
+    }
+
+    function renderRows(rows) {
+        return rows.map(r => `
+            <div class="detail-item">
+                <div class="icon-box"><i class="fas ${r.icon}"></i></div>
+                <div class="detail-text">
+                    <h3>${r.label}</h3>
+                    <p>${r.value}</p>
+                    ${r.sub ? `<p class="detail-sub">${r.sub}</p>` : ""}
+                </div>
+            </div>`).join("");
+    }
+
+    function renderEventDetail(ev) {
+        const countdownBlock = ev.countdown ? `
+            <section class="countdown-section">
+                <h2 class="section-title">Countdown</h2>
+                <div class="countdown-container">
+                    <div class="countdown-box"><span id="days">00</span><p>Days</p></div>
+                    <div class="countdown-box"><span id="hours">00</span><p>Hours</p></div>
+                    <div class="countdown-box"><span id="minutes">00</span><p>Minutes</p></div>
+                    <div class="countdown-box"><span id="seconds">00</span><p>Seconds</p></div>
+                </div>
+            </section>` : `
+            <section class="countdown-section">
+                <h2 class="section-title">Countdown</h2>
+                <p class="tbc-note">The timing for this event will be announced soon, in shā&rsquo; Allāh.</p>
+            </section>`;
+
+        const locationBlock = ev.location ? `
+            <section class="location-section">
+                <h2 class="section-title">Venue Location</h2>
+                <p class="venue-sub">${ev.venueName}</p>
+                <div class="map-frame"><div id="detail-map" class="custom-map"></div></div>
+                <a href="${ev.location.mapLink}" target="_blank" rel="noopener" class="btn premium-btn location-btn">
+                    <i class="fas fa-location-arrow"></i> Open in Google Maps
+                </a>
+            </section>` : "";
+
+        return `
+            <div class="ed-hero">
+                <div class="ed-emblem"><i class="fas ${ev.icon}"></i></div>
+                <span class="ed-eyebrow">Abdul Samad &amp; Anam</span>
+                <h1 class="ed-title">${ev.name}</h1>
+                <div class="decorative-divider"></div>
+            </div>
+            <section class="details-section">
+                <div class="details-card">
+                    <div class="card-border-glow"></div>
+                    <h2>Event Details</h2>
+                    ${renderRows(ev.rows)}
+                </div>
+            </section>
+            ${countdownBlock}
+            ${locationBlock}
+        `;
+    }
+
+    function openEventDetail(id) {
+        const ev = EVENTS.find(e => e.id === id);
+        if (!ev) return;
+
+        clearDetailDynamic();
+
+        const overlay = document.getElementById("event-detail");
+        const inner = document.getElementById("event-detail-inner");
+        inner.innerHTML = renderEventDetail(ev);
+
+        overlay.scrollTop = 0;
+        overlay.classList.add("active");
+        document.body.style.overflow = "hidden";
+
+        if (ev.countdown) startCountdown(ev.countdown);
+
+        if (ev.location) {
+            initEventMap("detail-map", { lat: ev.location.lat, lng: ev.location.lng, name: ev.venueName, dateLabel: ev.date });
+            setTimeout(() => { if (currentMap) currentMap.invalidateSize(); }, 500);
+        }
+    }
+
+    function closeEventDetail() {
+        const overlay = document.getElementById("event-detail");
+        if (overlay) overlay.classList.remove("active");
+        document.body.style.overflow = "";
+        clearDetailDynamic();
+    }
+
+    function buildCustomMap(containerId, opts) {
+        const mapContainer = document.getElementById(containerId);
+        if (!mapContainer) return;
+
+        // Venue coordinates for this event
+        const lat = opts.lat;
+        const lng = opts.lng;
 
         // Custom gold heart-shaped marker SVG
         const markerSvg = `
@@ -290,13 +465,14 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         // Initialize map with elegant style
-        const map = L.map("custom-map", {
+        const map = L.map(containerId, {
             center: [lat, lng],
             zoom: 16,
             zoomControl: true,
             scrollWheelZoom: true,
             attributionControl: true
         });
+        currentMap = map;
 
         // Warm, elegant tile layer (CartoDB Positron light with custom touch)
         L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
@@ -322,7 +498,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // Animate pulse
         let pulseSize = 20;
         let growing = true;
-        setInterval(() => {
+        const pulseTimer = setInterval(() => {
             if (growing) {
                 pulseSize += 0.3;
                 if (pulseSize >= 28) growing = false;
@@ -333,13 +509,14 @@ document.addEventListener("DOMContentLoaded", () => {
             pulseCircle.setRadius(pulseSize);
             pulseCircle.setStyle({ opacity: 0.4 - (pulseSize - 18) * 0.02 });
         }, 50);
+        currentMapIntervals.push(pulseTimer);
 
         // Optional: open popup on marker click
         marker.bindPopup(`
             <div style="text-align:center;font-family:'Cormorant Garamond',serif;padding:5px;">
-                <strong style="color:#AA7C11;font-size:16px;">Le Aura Grand Marquee</strong><br>
-                <span style="color:#5C5856;font-size:13px;">Auns & Aleena Wedding</span><br>
-                <span style="color:#AA7C11;font-size:12px;">14 November 2026</span>
+                <strong style="color:#AA7C11;font-size:16px;">${opts.name}</strong><br>
+                <span style="color:#5C5856;font-size:13px;">Abdul Samad &amp; Anam Wedding</span><br>
+                <span style="color:#AA7C11;font-size:12px;">${opts.dateLabel}</span>
             </div>
         `, { closeButton: true, className: "wedding-popup" });
 
@@ -385,18 +562,18 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // ==========================================
-    // 4. COUNTDOWN TIMER ENGINE
+    // 4. COUNTDOWN TIMER ENGINE (per-event, reusable)
     // ==========================================
-    function initCountdown() {
-        const targetDate = new Date("November 14, 2026 13:00:00").getTime();
+    function startCountdown(targetStr) {
+        const targetDate = new Date(targetStr).getTime();
 
         const updateTimer = () => {
-            const now = new Date().getTime();
-            const distance = targetDate - now;
+            const distance = targetDate - new Date().getTime();
 
             if (distance < 0) {
-                document.querySelector(".countdown-container").innerHTML = "<p class='gold-shimmer'>The Event Has Begun</p>";
-                clearInterval(timerInterval);
+                const container = document.querySelector("#event-detail .countdown-container");
+                if (container) container.innerHTML = "<p class='gold-shimmer'>The Celebration Has Begun</p>";
+                if (currentCountdown) { clearInterval(currentCountdown); currentCountdown = null; }
                 return;
             }
 
@@ -405,14 +582,15 @@ document.addEventListener("DOMContentLoaded", () => {
             const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
             const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-            document.getElementById("days").innerText = String(days).padStart(2, "0");
-            document.getElementById("hours").innerText = String(hours).padStart(2, "0");
-            document.getElementById("minutes").innerText = String(minutes).padStart(2, "0");
-            document.getElementById("seconds").innerText = String(seconds).padStart(2, "0");
+            const set = (id, val) => { const el = document.getElementById(id); if (el) el.innerText = String(val).padStart(2, "0"); };
+            set("days", days);
+            set("hours", hours);
+            set("minutes", minutes);
+            set("seconds", seconds);
         };
 
         updateTimer();
-        const timerInterval = setInterval(updateTimer, 1000);
+        currentCountdown = setInterval(updateTimer, 1000);
     }
 
     // ==========================================
