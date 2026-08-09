@@ -477,7 +477,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
                         <stop offset="0%" style="stop-color:#F3E5AB"/>
                         <stop offset="30%" style="stop-color:#D4AF37"/>
-                        <stop offset="60%" style="stop-color:#E6C15C"/>
+                        <stop offset="60%" style="stop-color:#AA7C11"/>
                         <stop offset="100%" style="stop-color:#F3E5AB"/>
                     </linearGradient>
                     <filter id="shadow">
@@ -557,9 +557,9 @@ document.addEventListener("DOMContentLoaded", () => {
         // Optional: open popup on marker click
         marker.bindPopup(`
             <div style="text-align:center;font-family:'Cormorant Garamond',serif;padding:5px;">
-                <strong style="color:#E6C15C;font-size:16px;">${opts.name}</strong><br>
+                <strong style="color:#AA7C11;font-size:16px;">${opts.name}</strong><br>
                 <span style="color:#5C5856;font-size:13px;">Abdul Samad &amp; Anam Wedding</span><br>
-                <span style="color:#E6C15C;font-size:12px;">${opts.dateLabel}</span>
+                <span style="color:#AA7C11;font-size:12px;">${opts.dateLabel}</span>
             </div>
         `, { closeButton: true, className: "wedding-popup" });
 
@@ -692,7 +692,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, this.r, 0, Math.PI, true);
-                ctx.fillStyle = `rgba(240, 214, 134, ${this.opacity})`;
+                ctx.fillStyle = `rgba(240, 173, 181, ${this.opacity})`;
                 ctx.fill();
             }
 
