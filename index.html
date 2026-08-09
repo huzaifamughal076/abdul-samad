@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wedding Invitation | Auns & Aleena</title>
+    <link rel="stylesheet" href="style.css?v=19">
+
+    <!-- Preload the envelope images shown first, so the opening screen paints fast -->
+    <link rel="preload" as="image" href="assets/seal-bismillah.png">
+    <link rel="preload" as="image" href="assets/envelope-top.png">
+    <link rel="preload" as="image" href="assets/envelope-flap.png">
+
+    <!-- Google Fonts (loaded non-render-blocking so text shows immediately) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" media="print" onload="this.media='all'"
+          href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Amiri:wght@400;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Cinzel:wght@500;600;700&family=Great+Vibes&family=Poppins:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap">
+    <!-- FontAwesome for Premium Icons (non-render-blocking; icons appear after open) -->
+    <link rel="stylesheet" media="print" onload="this.media='all'"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <noscript>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Amiri:wght@400;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Cinzel:wght@500;600;700&family=Great+Vibes&family=Poppins:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    </noscript>
+    <!-- Leaflet map assets are loaded lazily from script.js only when the invitation opens -->
+</head>
+<body>
+
+    <!-- 1. Preloader / Loading Screen -->
+    <div id="loader" class="loader-container">
+        <div class="loader-content">
+            <h2 class="loader-logo">A & A</h2>
+            <div class="gold-line"></div>
+            <p>Loading Invitation...</p>
+        </div>
+    </div>
+
+    <!-- Music Control Button -->
+    <button id="music-toggle" class="music-btn" aria-label="Toggle Music">
+        <i class="fas fa-music"></i>
+    </button>
+    <!-- Wedding du'a recitation (Sunnah supplication) — plays once when the invitation opens -->
+    <audio id="dua-recitation" preload="none" src="assets/holy-tune.mp3"></audio>
+    <!-- Qur'anic ayah recitation (Surah Ar-Rum 30:21) — plays on the ayah screen after the envelope is opened -->
+    <audio id="ayah-recitation" preload="auto" src="assets/surah_ar_rum_21.mp3"></audio>
+
+    <!-- 2. Envelope Opening System -->
+    <div id="envelope-wrapper" class="envelope-wrapper">
+        <!-- Background glow -->
+        <div class="env-glow-bg"></div>
+        <div id="env-particles" class="env-particles"></div>
+
+        <div class="envelope-container" id="envelope-container">
+            <div class="envelope" id="envelope">
+                <!-- Hidden invitation card (kept for JS hooks) -->
+                <div class="invitation-card" id="invitation-card"></div>
+
+                <!-- Four envelope flaps that slide apart on open -->
+                <div class="env-panel-wrap wrap-bottom">
+                    <img class="env-panel panel-bottom" src="assets/envelope-flap.png" alt="">
+                </div>
+                <div class="env-panel-wrap wrap-left">
+                    <img class="env-panel panel-left" src="assets/envelope-flap.png" alt="">
+                </div>
+                <div class="env-panel-wrap wrap-right">
+                    <img class="env-panel panel-right" src="assets/envelope-flap.png" alt="">
+                </div>
+                <div class="env-panel-wrap wrap-top" id="env-flap">
+                    <img class="env-panel panel-top" src="assets/envelope-top.png" alt="">
+                </div>
+
+                <!-- Gold Bismillah wax seal (tap target) -->
+                <img class="wax-seal" id="wax-seal" src="assets/seal-bismillah.png" alt="Bismillah">
+                <div class="seal-crack" id="seal-crack"></div>
+                <div class="env-ribbon" id="env-ribbon"></div>
+            </div>
+        </div>
+
+        <button id="open-btn" class="btn open-btn">
+            <span class="open-text">Open Invitation</span>
+            <img class="open-divider-img" src="assets/line-flower.png" alt="">
+        </button>
+    </div>
+
+    <!-- 2b. Ayah Recitation Screen — appears after the envelope is opened, before the
+         main invitation. The recitation auto-plays; the "Skip & Continue" button (and a
+         natural end of the audio) both advance to the main content. -->
+    <div id="env-ayah" class="env-ayah">
+        <!-- Ambient background layers -->
+        <div class="ayah-bg-pattern"></div>
+        <div class="ayah-bg-mosque"></div>
+        <div class="ayah-bg-sparkles"></div>
+
+        <!-- Ornate gold frame with corner jewels -->
+        <div class="ayah-frame">
+            <span class="ayah-frame-corner c-tl"></span>
+            <span class="ayah-frame-corner c-tr"></span>
+            <span class="ayah-frame-corner c-bl"></span>
+            <span class="ayah-frame-corner c-br"></span>
+        </div>
+
+        <div class="env-ayah-inner">
+            <!-- Emblem: the Qur'an within a mihrab arch, crescent above -->
+            <div class="ayah-emblem">
+                <span class="ayah-emblem-finial"></span>
+                <div class="ayah-emblem-arch">
+                    <i class="fas fa-star-and-crescent ayah-emblem-crescent"></i>
+                    <i class="fas fa-book-quran ayah-emblem-book"></i>
+                </div>
+            </div>
+
+            <!-- Top divider ornament -->
+            <span class="ayah-ornament ayah-ornament-top">
+                <svg viewBox="0 0 220 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M6 8 H84" stroke="currentColor" stroke-width="1"/>
+                    <path d="M136 8 H214" stroke="currentColor" stroke-width="1"/>
+                    <path d="M84 8 q5 -7 10 0" stroke="currentColor" stroke-width="1"/>
+                    <path d="M136 8 q-5 -7 -10 0" stroke="currentColor" stroke-width="1"/>
+                    <circle cx="98" cy="8" r="1.8" fill="currentColor"/>
+                    <circle cx="122" cy="8" r="1.8" fill="currentColor"/>
+                    <path d="M110 1 L117 8 L110 15 L103 8 Z" fill="currentColor"/>
+                </svg>
+            </span>
+
+            <!-- Arabic ayah (word-by-word highlight) -->
+            <div class="ayah-arabic-wrap">
+                <p class="ayah-arabic" id="ayah-arabic">وَمِنْ ءَايَـٰتِهِۦٓ أَنْ خَلَقَ لَكُم مِّنْ أَنفُسِكُمْ أَزْوَٰجًۭا لِّتَسْكُنُوٓا۟ إِلَيْهَا وَجَعَلَ بَيْنَكُم مَّوَدَّةًۭ وَرَحْمَةً ۚ إِنَّ فِى ذَٰلِكَ لَـَٔايَـٰتٍۢ لِّقَوْمٍۢ يَتَفَكَّرُونَ</p>
+            </div>
+
+            <!-- Translation card -->
+            <div class="ayah-trans-box">
+                <span class="ayah-quote">&ldquo;</span>
+                <span class="tb-corner tb-tl"></span>
+                <span class="tb-corner tb-tr"></span>
+                <span class="tb-corner tb-bl"></span>
+                <span class="tb-corner tb-br"></span>
+                <p class="ayah-translation">"And one of His signs is that He created for you spouses from among yourselves so that you may find comfort in them. And He has placed between you compassion and mercy. Surely in this are signs for people who reflect."</p>
+            </div>
+
+            <!-- Reference -->
+            <div class="ayah-ref-wrap">
+                <span class="ayah-ref">Surah Ar-Rum &middot; 30:21</span>
+                <span class="ayah-ornament ayah-ornament-ref">
+                    <svg viewBox="0 0 160 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <path d="M6 8 H64" stroke="currentColor" stroke-width="1"/>
+                        <path d="M96 8 H154" stroke="currentColor" stroke-width="1"/>
+                        <path d="M80 2 L86 8 L80 14 L74 8 Z" fill="currentColor"/>
+                    </svg>
+                </span>
+            </div>
+
+            <!-- Recitation progress -->
+            <div class="ayah-progress">
+                <div class="ayah-dots" id="ayah-dots">
+                    <span class="ayah-dot"></span>
+                    <span class="ayah-dot"></span>
+                    <span class="ayah-dot"></span>
+                    <span class="ayah-dot"></span>
+                    <span class="ayah-dot"></span>
+                </div>
+                <div class="ayah-progress-label">
+                    <span class="apl-wing left"></span>
+                    <span class="apl-text">Recitation</span>
+                    <span class="apl-wing right"></span>
+                </div>
+            </div>
+
+            <button type="button" id="ayah-skip" class="ayah-continue-btn">
+                <span class="ayah-continue-text">Skip &amp; Continue</span>
+                <i class="fas fa-arrow-right"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- 3. Main Website Content (Hidden until envelope opens) -->
+    <main id="main-content" class="main-content hidden">
+        <!-- Floating Petals Canvas -->
+        <canvas id="petals-canvas"></canvas>
+
+        <!-- Decorative Floral Fixed Corners -->
+        <div class="floral-corner top-left"></div>
+        <div class="floral-corner top-right"></div>
+
+        <!-- Hero Section -->
+        <section class="hero reveal">
+            <div class="hero-inner">
+                <span class="event-tag gold-shimmer">Shalima Event</span>
+
+                <p class="host-line">
+                    Mr. &amp; Mrs. Irfan Sharif<br>
+                    <span class="host-line-sub">cordially invite you to share in the joy and blessings of their beloved son's wedding celebration</span>
+                </p>
+
+                <h1 class="couple-name">M. Auns Irfan</h1>
+                <div class="couple-amp-wrap">
+                    <span class="couple-amp">&amp;</span>
+                </div>
+                <h1 class="couple-name">Aleena Ishtiaq</h1>
+                
+                <p class="invitation-text">
+                    “Together with our families, we joyfully invite you to celebrate our son's wedding.”
+                </p>
+                <div class="decorative-divider"></div>
+            </div>
+        </section>
+
+        <!-- Details Card Section -->
+        <section class="details-section reveal">
+            <div class="details-card">
+                <div class="card-border-glow"></div>
+                <h2>Wedding Details</h2>
+                
+                <div class="detail-item">
+                    <div class="icon-box"><i class="fas fa-calendar-alt"></i></div>
+                    <div class="detail-text">
+                        <h3>Date</h3>
+                        <p>14 November 2026</p>
+                    </div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="icon-box"><i class="fas fa-crown"></i></div>
+                    <div class="detail-text">
+                        <h3>Sehra Bandi</h3>
+                        <p>11:00 AM</p>
+                        <p class="detail-sub">Groom's Residence</p>
+                    </div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="icon-box"><i class="fas fa-clock"></i></div>
+                    <div class="detail-text">
+                        <h3>Venue Timing</h3>
+                        <p>1:00 PM – 3:00 PM</p>
+                    </div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="icon-box"><i class="fas fa-map-marker-alt"></i></div>
+                    <div class="detail-text">
+                        <h3>Venue</h3>
+                        <p>Le Aura Grand Marquee</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Countdown Timer Section -->
+        <section class="countdown-section reveal">
+            <h2 class="section-title">The Countdown</h2>
+            <div class="countdown-container">
+                <div class="countdown-box">
+                    <span id="days">00</span>
+                    <p>Days</p>
+                </div>
+                <div class="countdown-box">
+                    <span id="hours">00</span>
+                    <p>Hours</p>
+                </div>
+                <div class="countdown-box">
+                    <span id="minutes">00</span>
+                    <p>Minutes</p>
+                </div>
+                <div class="countdown-box">
+                    <span id="seconds">00</span>
+                    <p>Seconds</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Location Section -->
+        <section class="location-section reveal">
+            <h2 class="section-title">Venue Location</h2>
+            <p class="venue-sub">Le Aura Grand Marquee</p>
+            
+            <div class="map-frame" id="map-frame">
+                <div id="custom-map" class="custom-map"></div>
+            </div>
+
+            <a href="https://maps.app.goo.gl/PMvD3bVZJBwWqLvJ6?g_st=ic" target="_blank" class="btn premium-btn location-btn">
+                <i class="fas fa-location-arrow"></i> Open in Google Maps
+            </a>
+        </section>
+
+        <!-- R.S.V.P Section -->
+        <section class="rsvp-section reveal">
+            <h2 class="section-title">R.S.V.P</h2>
+            <div class="rsvp-card">
+                <div class="card-border-glow"></div>
+                <div class="rsvp-item">
+                    <a href="tel:03214423351" class="icon-box" aria-label="Call M. Ubaid Sharif"><i class="fas fa-phone"></i></a>
+                    <div class="rsvp-text">
+                        <h3>M. Ubaid Sharif</h3>
+                        <a href="tel:03214423351">0321 4423351</a>
+                    </div>
+                </div>
+                <div class="rsvp-item">
+                    <a href="tel:03214558634" class="icon-box" aria-label="Call M. Irfan Sharif"><i class="fas fa-phone"></i></a>
+                    <div class="rsvp-text">
+                        <h3>M. Irfan Sharif</h3>
+                        <a href="tel:03214558634">0321 4558634</a>
+                    </div>
+                </div>
+                <div class="rsvp-item">
+                    <a href="tel:03004124027" class="icon-box" aria-label="Call M. Nadeem Ishaq"><i class="fas fa-phone"></i></a>
+                    <div class="rsvp-text">
+                        <h3>M. Nadeem Ishaq</h3>
+                        <a href="tel:03004124027">0300 4124027</a>
+                    </div>
+                </div>
+                <div class="rsvp-item">
+                    <a href="tel:03239949884" class="icon-box" aria-label="Call Syed Muzaffar Gillani"><i class="fas fa-phone"></i></a>
+                    <div class="rsvp-text">
+                        <h3>Syed Muzaffar Gillani</h3>
+                        <a href="tel:03239949884">0323 9949884</a>
+                    </div>
+                </div>
+                <div class="rsvp-item">
+                    <a href="tel:03020002840" class="icon-box" aria-label="Call Ihsan Fayaz"><i class="fas fa-phone"></i></a>
+                    <div class="rsvp-text">
+                        <h3>Ihsan Fayaz</h3>
+                        <a href="tel:03020002840">0302 0002840</a>
+                    </div>
+                </div>
+                <div class="rsvp-item">
+                    <a href="tel:03224755176" class="icon-box" aria-label="Call M. Huzaifa Irfan"><i class="fas fa-phone"></i></a>
+                    <div class="rsvp-text">
+                        <h3>M. Huzaifa Irfan</h3>
+                        <a href="tel:03224755176">0322 4755176</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Looking Forward Section -->
+        <section class="looking-forward-section reveal">
+            <h2 class="section-title">Looking Forward</h2>
+            <div class="looking-forward-card">
+                <div class="card-border-glow"></div>
+                <p class="lf-intro">With warm hearts, we are looking forward to welcoming you</p>
+                <div class="lf-names">
+                    <p class="lf-name">Mr. &amp; Mrs. Ubaid Sharif</p>
+                    <p class="lf-name">Mr. &amp; Mrs. Irfan Sharif</p>
+                    <p class="lf-name">Mr. &amp; Mrs. Nadeem Ishaq</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="reveal">
+            <p class="quote">“Two hearts, one soul, and a lifetime of love.”</p>
+            <div class="footer-divider"></div>
+            <p class="closing">We look forward to celebrating this joyous occasion with you.</p>
+        </footer>
+    </main>
+
+    <script src="script.js?v=8"></script>
+</body>
+</html>
