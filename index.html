@@ -181,58 +181,77 @@
         <!-- Decorative Floral Corner Bouquets (roses + baby's breath + eucalyptus) -->
         <svg class="floral-defs" width="0" height="0" aria-hidden="true">
             <defs>
+                <!-- single rose petals (teardrops radiating from the flower centre) -->
+                <path id="petal-o" d="M0 0 C-11 -8 -12 -27 0 -35 C12 -27 11 -8 0 0 Z"/>
+                <path id="petal-m" d="M0 0 C-8 -6 -9 -20 0 -26 C9 -20 8 -6 0 0 Z"/>
+                <path id="petal-i" d="M0 0 C-5 -4 -5 -12 0 -16 C5 -12 5 -4 0 0 Z"/>
+
+                <!-- a full rose bloom: three overlapping rings of petals + centre -->
+                <g id="rose-bloom">
+                    <g fill="#F1E4C7" stroke="#DEC9A0" stroke-width="0.9">
+                        <use href="#petal-o" transform="rotate(0)"/>
+                        <use href="#petal-o" transform="rotate(51)"/>
+                        <use href="#petal-o" transform="rotate(103)"/>
+                        <use href="#petal-o" transform="rotate(154)"/>
+                        <use href="#petal-o" transform="rotate(206)"/>
+                        <use href="#petal-o" transform="rotate(257)"/>
+                        <use href="#petal-o" transform="rotate(309)"/>
+                    </g>
+                    <g fill="#FBF5E8" stroke="#E8D7B6" stroke-width="0.8">
+                        <use href="#petal-m" transform="rotate(25)"/>
+                        <use href="#petal-m" transform="rotate(85)"/>
+                        <use href="#petal-m" transform="rotate(145)"/>
+                        <use href="#petal-m" transform="rotate(205)"/>
+                        <use href="#petal-m" transform="rotate(265)"/>
+                        <use href="#petal-m" transform="rotate(325)"/>
+                    </g>
+                    <g fill="#F4E8CC" stroke="#E0CDA4" stroke-width="0.7">
+                        <use href="#petal-i" transform="rotate(0)"/>
+                        <use href="#petal-i" transform="rotate(72)"/>
+                        <use href="#petal-i" transform="rotate(144)"/>
+                        <use href="#petal-i" transform="rotate(216)"/>
+                        <use href="#petal-i" transform="rotate(288)"/>
+                    </g>
+                    <circle r="4" fill="#EAD9B0"/>
+                </g>
+
+                <!-- a small five-petal filler flower (baby's breath / gypsophila) -->
+                <g id="floret">
+                    <g fill="#FFFBF0" stroke="#E7D6B4" stroke-width="0.5">
+                        <circle cx="0" cy="-3.2" r="1.9"/>
+                        <circle cx="3" cy="-1" r="1.9"/>
+                        <circle cx="1.9" cy="2.6" r="1.9"/>
+                        <circle cx="-1.9" cy="2.6" r="1.9"/>
+                        <circle cx="-3" cy="-1" r="1.9"/>
+                    </g>
+                    <circle r="1.3" fill="#E4C877"/>
+                </g>
+
+                <!-- the full corner bouquet -->
                 <g id="floral-spray">
                     <!-- stems -->
                     <g fill="none" stroke="#A7B98D" stroke-width="2.4" stroke-linecap="round">
-                        <path d="M14 16 C70 34 128 74 205 176"/>
-                        <path d="M14 16 C50 22 74 40 92 70"/>
-                        <path d="M120 44 C150 60 168 92 176 150"/>
+                        <path d="M40 40 C80 60 128 92 205 176"/>
+                        <path d="M40 40 C64 44 84 58 98 82"/>
+                        <path d="M120 52 C150 66 168 96 176 150"/>
                     </g>
                     <!-- eucalyptus leaves -->
                     <g fill="#B4C59B">
                         <ellipse cx="150" cy="120" rx="14" ry="9" transform="rotate(58 150 120)"/>
                         <ellipse cx="168" cy="150" rx="13" ry="8.5" transform="rotate(64 168 150)"/>
-                        <ellipse cx="128" cy="92" rx="14" ry="9" transform="rotate(50 128 92)"/>
+                        <ellipse cx="132" cy="96" rx="14" ry="9" transform="rotate(50 132 96)"/>
                         <ellipse cx="188" cy="176" rx="12" ry="8" transform="rotate(70 188 176)"/>
-                        <ellipse cx="86" cy="66" rx="13" ry="8.5" transform="rotate(40 86 66)"/>
-                        <ellipse cx="66" cy="44" rx="12" ry="8" transform="rotate(30 66 44)"/>
+                        <ellipse cx="150" cy="150" rx="12" ry="8" transform="rotate(66 150 150)"/>
                     </g>
-                    <!-- baby's breath -->
-                    <g fill="#F3E7BE" stroke="#D9C489" stroke-width="0.8">
-                        <circle cx="156" cy="64" r="3.2"/><circle cx="145" cy="62" r="2.8"/>
-                        <circle cx="162" cy="70" r="2.6"/><circle cx="138" cy="72" r="2.6"/>
-                        <circle cx="172" cy="60" r="3"/><circle cx="180" cy="74" r="2.6"/>
-                        <circle cx="96" cy="30" r="2.8"/><circle cx="108" cy="24" r="2.4"/>
-                    </g>
+                    <!-- baby's breath florets -->
+                    <use href="#floret" transform="translate(158 66)"/>
+                    <use href="#floret" transform="translate(178 60) scale(0.8)"/>
+                    <use href="#floret" transform="translate(170 86) scale(0.9)"/>
+                    <use href="#floret" transform="translate(150 76) scale(0.72)"/>
                     <!-- roses -->
-                    <g stroke="#C0993F" stroke-width="1.5" fill="#F7EDD0" stroke-linejoin="round" stroke-linecap="round">
-                        <g transform="translate(52 52)">
-                            <circle r="30"/>
-                            <g fill="none">
-                                <path d="M-13 -5 C-6 -16 8 -16 14 -5 C19 4 10 14 0 14 C-11 14 -19 3 -13 -5 Z"/>
-                                <path d="M-8 -3 C-3 -10 6 -10 9 -2 C12 5 5 11 -1 10"/>
-                                <path d="M-3 -1 C-1 -6 5 -5 5 1"/>
-                                <path d="M-27 -8 C-22 -22 -6 -28 9 -25"/>
-                                <path d="M27 -8 C22 -22 6 -28 -9 -25"/>
-                                <path d="M-24 12 C-16 22 2 24 14 18"/>
-                            </g>
-                        </g>
-                        <g transform="translate(104 40)">
-                            <circle r="21"/>
-                            <g fill="none">
-                                <path d="M-10 -4 C-4 -12 7 -12 11 -3 C14 3 6 11 -1 10 C-9 9 -14 1 -10 -4 Z"/>
-                                <path d="M-5 -1 C-2 -7 5 -6 5 1"/>
-                                <path d="M-19 -6 C-14 -16 -2 -20 9 -17"/>
-                            </g>
-                        </g>
-                        <g transform="translate(40 100)">
-                            <circle r="16"/>
-                            <g fill="none">
-                                <path d="M-7 -3 C-3 -9 6 -8 8 -2 C10 3 4 9 -1 8 C-7 7 -10 1 -7 -3 Z"/>
-                                <path d="M-3 0 C-1 -4 4 -4 4 1"/>
-                            </g>
-                        </g>
-                    </g>
+                    <use href="#rose-bloom" transform="translate(56 56) scale(1.08)"/>
+                    <use href="#rose-bloom" transform="translate(112 46) scale(0.72)"/>
+                    <use href="#rose-bloom" transform="translate(44 108) scale(0.6)"/>
                 </g>
             </defs>
         </svg>
