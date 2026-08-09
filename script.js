@@ -49,10 +49,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 position: absolute;
                 width: ${Math.random() * 3 + 1}px;
                 height: ${Math.random() * 3 + 1}px;
-                background: radial-gradient(circle, #F0D0D5, #C77E88);
+                background: radial-gradient(circle, #F3E5AB, #D4AF37);
                 border-radius: 50%;
                 pointer-events: none;
-                box-shadow: 0 0 4px rgba(199, 126, 136, 0.3);
+                box-shadow: 0 0 4px rgba(212, 175, 55, 0.3);
                 top: ${Math.random() * 100}%;
                 left: ${Math.random() * 100}%;
                 opacity: ${Math.random() * 0.4 + 0.1};
@@ -475,10 +475,10 @@ document.addEventListener("DOMContentLoaded", () => {
             <svg xmlns="http://www.w3.org/2000/svg" width="48" height="60" viewBox="0 0 48 60">
                 <defs>
                     <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" style="stop-color:#F0D0D5"/>
-                        <stop offset="30%" style="stop-color:#C77E88"/>
-                        <stop offset="60%" style="stop-color:#A05663"/>
-                        <stop offset="100%" style="stop-color:#F0D0D5"/>
+                        <stop offset="0%" style="stop-color:#F3E5AB"/>
+                        <stop offset="30%" style="stop-color:#D4AF37"/>
+                        <stop offset="60%" style="stop-color:#E6C15C"/>
+                        <stop offset="100%" style="stop-color:#F3E5AB"/>
                     </linearGradient>
                     <filter id="shadow">
                         <feDropShadow dx="0" dy="2" stdDeviation="2" flood-opacity="0.3"/>
@@ -531,8 +531,8 @@ document.addEventListener("DOMContentLoaded", () => {
         // Add a subtle pulse circle behind the marker
         const pulseCircle = L.circleMarker([lat, lng], {
             radius: 20,
-            color: "#C77E88",
-            fillColor: "#C77E88",
+            color: "#D4AF37",
+            fillColor: "#D4AF37",
             fillOpacity: 0.08,
             weight: 1.5,
             opacity: 0.3
@@ -557,9 +557,9 @@ document.addEventListener("DOMContentLoaded", () => {
         // Optional: open popup on marker click
         marker.bindPopup(`
             <div style="text-align:center;font-family:'Cormorant Garamond',serif;padding:5px;">
-                <strong style="color:#A05663;font-size:16px;">${opts.name}</strong><br>
+                <strong style="color:#E6C15C;font-size:16px;">${opts.name}</strong><br>
                 <span style="color:#5C5856;font-size:13px;">Abdul Samad &amp; Anam Wedding</span><br>
-                <span style="color:#A05663;font-size:12px;">${opts.dateLabel}</span>
+                <span style="color:#E6C15C;font-size:12px;">${opts.dateLabel}</span>
             </div>
         `, { closeButton: true, className: "wedding-popup" });
 
@@ -692,7 +692,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, this.r, 0, Math.PI, true);
-                ctx.fillStyle = `rgba(240, 173, 181, ${this.opacity})`;
+                ctx.fillStyle = `rgba(240, 214, 134, ${this.opacity})`;
                 ctx.fill();
             }
 
