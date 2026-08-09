@@ -300,12 +300,13 @@ document.addEventListener("DOMContentLoaded", () => {
             name: "Walima",
             icon: "fa-utensils",
             date: "9 November 2026",
-            countdown: null, // time to be confirmed
+            countdown: "November 9, 2026 18:00:00",
             venueName: "Empire Hall — Garrison Country Club",
             location: { lat: 31.5379359, lng: 74.394769, mapLink: "https://maps.app.goo.gl/U8ZtPtjaLSyZKWui7" },
             rows: [
                 { icon: "fa-calendar-alt", label: "Date", value: "9 November 2026" },
-                { icon: "fa-clock", label: "Time", value: "To be confirmed" },
+                { icon: "fa-clock", label: "Time", value: "6:00 PM – 9:00 PM" },
+                { icon: "fa-utensils", label: "Dinner", value: "8:00 PM" },
                 { icon: "fa-map-marker-alt", label: "Venue", value: "Empire Hall #3, Garrison Country Club",
                   sub: "Lahore" }
             ]
