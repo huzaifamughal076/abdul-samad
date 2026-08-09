@@ -999,6 +999,12 @@ footer { padding: 60px 20px 40px; }
     max-width: 640px; margin: 0 auto;
 }
 
+/* When a guest is invited to only one event, centre the lone card. */
+.events-grid.single-card {
+    grid-template-columns: minmax(0, 320px);
+    justify-content: center;
+}
+
 .event-card {
     position: relative; overflow: hidden;
     cursor: pointer; text-align: center;

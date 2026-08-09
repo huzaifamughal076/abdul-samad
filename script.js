@@ -313,6 +313,32 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     ];
 
+    // ---- Which events this guest is invited to (driven by ?events= in the URL) ----
+    // Examples:
+    //   (no param)                -> all four cards
+    //   ?events=all               -> all four cards
+    //   ?events=nikah,walima      -> only Nikah and Walima
+    //   ?events=sehra-barat       -> only the Sehra Bandi & Barat card
+    // A few friendly aliases are accepted so hand-written links are forgiving.
+    const ALL_EVENT_IDS = ["nikah", "mehndi", "sehra-barat", "walima"];
+    const EVENT_ALIASES = {
+        "nikah": ["nikah", "nikkah", "nikaah"],
+        "mehndi": ["mehndi", "mehendi", "mayun", "mayoun"],
+        "sehra-barat": ["sehra-barat", "sehra", "barat", "baraat", "sehrabandi", "sehra-bandi", "sehra_barat"],
+        "walima": ["walima", "valima", "walimah", "reception"]
+    };
+
+    function getAllowedEvents() {
+        const raw = new URLSearchParams(window.location.search).get("events");
+        if (!raw || raw.trim().toLowerCase() === "all") return ALL_EVENT_IDS.slice();
+        const tokens = raw.split(/[,+\s]+/).map(s => s.trim().toLowerCase()).filter(Boolean);
+        // Keep the canonical order regardless of the order given in the URL.
+        const allowed = ALL_EVENT_IDS.filter(id => tokens.some(t => EVENT_ALIASES[id].includes(t)));
+        return allowed.length ? allowed : ALL_EVENT_IDS.slice();
+    }
+
+    let allowedEventIds = null;
+
     // Live handles for whatever the current detail view spun up, so we can tear it
     // all down cleanly when navigating away (prevents timer/map leaks).
     let currentMap = null;
@@ -327,9 +353,24 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function initEventCards() {
+        allowedEventIds = new Set(getAllowedEvents());
+        const grid = document.getElementById("events-grid");
+        let visible = 0;
+
         document.querySelectorAll(".event-card").forEach(card => {
-            card.addEventListener("click", () => openEventDetail(card.dataset.event));
+            if (allowedEventIds.has(card.dataset.event)) {
+                card.style.display = "";
+                card.addEventListener("click", () => openEventDetail(card.dataset.event));
+                visible++;
+            } else {
+                // Not invited to this event — remove it from view entirely.
+                card.style.display = "none";
+            }
         });
+
+        // A lone card gets centred rather than stranded in the left column.
+        if (grid) grid.classList.toggle("single-card", visible === 1);
+
         const back = document.getElementById("detail-back");
         if (back) back.addEventListener("click", closeEventDetail);
     }
@@ -392,6 +433,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function openEventDetail(id) {
+        if (allowedEventIds && !allowedEventIds.has(id)) return;
         const ev = EVENTS.find(e => e.id === id);
         if (!ev) return;
 
