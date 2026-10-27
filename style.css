@@ -716,6 +716,12 @@ body {
     filter: drop-shadow(0 2px 4px rgba(170, 124, 17, 0.25));
 }
 
+.host-main-line {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.6rem; font-weight: 800;
+    color: var(--gold-dark); letter-spacing: 0.5px;
+    line-height: 1.5; margin-bottom: 30px;
+}
 .host-line {
     font-family: 'Playfair Display', serif;
     font-size: 1.6rem; font-weight: 500;
