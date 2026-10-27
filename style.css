@@ -731,6 +731,18 @@ body {
     max-width: 480px; margin: 8px auto 0;
 }
 
+/* Memorial for the groom's late parents — open, like the hosts' line */
+.memorial-label {
+    display: flex; align-items: center; justify-content: center; gap: 14px;
+    margin-bottom: 12px;
+}
+.memorial-label .apl-wing { width: 44px; }
+.memorial-label-text {
+    font-family: 'Cinzel', serif; font-size: 0.8rem; font-weight: 600;
+    letter-spacing: 3px; text-transform: uppercase;
+    color: var(--gold-dark);
+}
+
 .couple-amp-wrap { margin: 6px 0; line-height: 1; }
 
 /* Golden "&" in the same calligraphy script as the couple names */
